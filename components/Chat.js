@@ -47,6 +47,7 @@ export default class Chat extends React.Component {
         user: {
           _id: data.user._id,
           name: data.user.name,
+          avatar: "https://placeimg.com/140/140/any",
         },
       });
     });
@@ -147,7 +148,7 @@ export default class Chat extends React.Component {
           messages={this.state.messages}
           onSend={(messages) => this.onSend(messages)}
           user={{
-            _id: 1,
+            _id: this.state.user._id,
             name: this.state.name,
           }}
         />
