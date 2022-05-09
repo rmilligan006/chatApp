@@ -9,12 +9,12 @@ require("firebase/firestore");
 
 //firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBDGMr-Ibg8OYlq_gkFozv_NCx4cdeJZx8",
-  authDomain: "test-10722.firebaseapp.com",
-  projectId: "test-10722",
-  storageBucket: "test-10722.appspot.com",
-  messagingSenderId: "714521207318",
-  appId: "1:714521207318:web:63b34639f92393ba2a0b37",
+  apiKey: "AIzaSyAr8JkAYZtyE8cNHS_t9F3Ont9bVxCEZ_o",
+  authDomain: "chat-web-app-5f1cc.firebaseapp.com",
+  projectId: "chat-web-app-5f1cc",
+  storageBucket: "chat-web-app-5f1cc.appspot.com",
+  messagingSenderId: "830888082339",
+  appId: "1:830888082339:web:cd30fc45015403882c3816",
 };
 
 export default class Chat extends React.Component {
@@ -35,9 +35,7 @@ export default class Chat extends React.Component {
     }
 
     //create a reference to the firestore messages collection
-    this.referenceChatMessages = firebase
-      .firestore()
-      .collection("chatappmessages");
+    this.referenceChatMessages = firebase.firestore().collection("messages");
     this.refMsgsUser = null;
   }
 
