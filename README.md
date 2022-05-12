@@ -14,7 +14,7 @@ Expo
 Google Firebase
 Gifted Chat
 
-Installation
+<h1>Installation</h1>
 
 <H2>Prerequisites</h2>
 Node.js and npm/yarn
