@@ -50,41 +50,6 @@ export default class Chat extends React.Component {
       "Console Warning",
     ]);
   }
-
-  async getMessages() {
-    let messages = "";
-    try {
-      messages = (await AsyncStorage.getItem("messages")) || [];
-      this.setState({
-        messages: JSON.parse(messages),
-      });
-    } catch (error) {
-      console.log(error.message);
-    }
-  }
-
-  async saveMessages() {
-    try {
-      await AsyncStorage.setItem(
-        "messages",
-        JSON.stringify(this.state.messages)
-      );
-    } catch (error) {
-      console.log(error.message);
-    }
-  }
-
-  async deleteMessages() {
-    try {
-      await AsyncStorage.removeItem("messages");
-      this.setState({
-        messages: [],
-      });
-    } catch (error) {
-      console.log(error.message);
-    }
-  }
-
   componentDidMount() {
     //sets user name at top of screen
     const name = this.props.route.params.name;
@@ -136,6 +101,33 @@ export default class Chat extends React.Component {
     });
   }
 
+  async getMessages() {
+    let messages = "";
+    try {
+      messages = (await AsyncStorage.getItem("messages")) || [];
+      this.setState({
+        messages: JSON.parse(messages),
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  async saveMessages() {
+    await AsyncStorage.setItem("messages", JSON.stringify(this.state.messages));
+  }
+
+  async deleteMessages() {
+    try {
+      await AsyncStorage.removeItem("messages");
+      this.setState({
+        messages: [],
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
   onCollectionUpdate = (querySnapshot) => {
     const messages = [];
     // goes through each document
@@ -158,14 +150,17 @@ export default class Chat extends React.Component {
     this.setState({
       messages: messages,
     });
-    this.saveMessages();
+    this.saveMessages().catch((e) => {
+      console.error(e);
+      alert("Something went wrong...");
+    });
   };
 
   //adding messages to the database
   addMessage() {
     const message = this.state.messages[0];
 
-    this.referenceChatMessages.add({
+    return this.referenceChatMessages.add({
       uid: this.state.uid,
       _id: message._id,
       text: message.text || "",
@@ -184,19 +179,19 @@ export default class Chat extends React.Component {
       }),
       () => {
         this.saveMessages();
-        this.addMessage();
+        this.addMessage().catch((e) => {
+          //
+          alert("Sorry, couldn't send the message!");
+        });
       }
     );
   }
 
   componentWillUnmount() {
-    // close connections when app is closed
-    NetInfo.fetch().then((connection) => {
-      if (connection.isConnected) {
-        this.unsubscribe();
-        this.authUnsubscribe();
-      }
-    });
+    // stop listening for changes
+    this.unsubscribe();
+    // stop listening to authentication
+    this.authUnsubscribe();
   }
 
   renderBubble(props) {
@@ -216,8 +211,7 @@ export default class Chat extends React.Component {
   }
 
   renderInputToolbar(props) {
-    if (this.state.isConnected == false) {
-    } else {
+    if (this.state.isConnected) {
       return <InputToolbar {...props} />;
     }
   }
